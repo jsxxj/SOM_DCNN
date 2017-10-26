@@ -171,7 +171,7 @@ def test_CNN(dataset='testData5.pkl', params_file='Dropout_2_2_CNN_params.pkl'):
     # 第一层卷积、池化后  第一层卷积核为20个，每一个样本图片都产生20个特征图，
     N_filters_0 = 20
     D_features_0 = 1
-    # 输入必须是为四维的，所以需要用到reshape，这一层的输入是一批样本是20个样本，28*28，
+    
 
     layer0_input = x.reshape((sampleLength, 1, 40, 36))
     layer0 = LeNetConvPoolLayer(
@@ -183,8 +183,7 @@ def test_CNN(dataset='testData5.pkl', params_file='Dropout_2_2_CNN_params.pkl'):
         poolsize=(2, 2)
     )
     # layer0.output: (batch_size, N_filters_0, (40-5+1)/2, (36-5+1)/2) -> 20*20*18*16
-    # 卷积之后得到24*24 在经过池化以后得到12*12. 最后输出的格式为20个样本，20个12*12的特征图。卷积操作是对应的窗口呈上一个卷积核参数 相加在求和得到一个特
-    # 征图中的像素点数  这里池化采用最大池化 减少了参数的训练。
+    
     N_filters_1 = 50
     D_features_1 = N_filters_0
     layer1 = LeNetConvPoolLayer(
@@ -195,13 +194,9 @@ def test_CNN(dataset='testData5.pkl', params_file='Dropout_2_2_CNN_params.pkl'):
         filter_shape=(N_filters_1, D_features_1, 5, 5),
         poolsize=(2, 2)
     )
-    # layer1.output: (20,50,7,6)
-    # 第二层输出为20个样本，每一个样本图片对应着50张4*4的特征图，其中的卷积和池化操作都是同第一层layer0是一样的。
-    # 这一层是将上一层的输出的样本的特征图进行一个平面化，也就是拉成一个一维向量，最后变成一个20*800的矩阵，每一行代表一个样本，
-
-    # (20,50,4,4)->(20,(50*4*4))
+    
     layer2_input = layer1.output.flatten(2)
-    # 上一层的输出变成了20*800的矩阵，通过全连接，隐层操作，将800变成了500个神经元，里面涉及到全连接。
+
     layer2 = HiddenLayer(
         layer2_input,
         params_W=layer2_params[0],
